@@ -9,7 +9,7 @@ class station7(generic_station):
     def __init__(self,clpNumber  , ip , port = 502) -> None:
         super().__init__(clpNumber, ip , port)
 
-    def output(self, color):
+    def outputStartWithColor(self, color):
         B1 = False
         B2 = False
 
@@ -27,7 +27,7 @@ class station7(generic_station):
         self.writeBits(7, B2)
         self.writeBits(8, False)
         
-        super().output()
+        # super().output()
 
         time.sleep(0.1)
         self.pulseBit(9)

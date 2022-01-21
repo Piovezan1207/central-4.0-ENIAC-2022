@@ -69,13 +69,19 @@ class process:
             return "Alguma estação está em processo, aguarde para fazer um novo chamado"
         
         if flow == "storage":
-            for i in process.stations:
-                pass
+            for station in process.stations:
+                station.reset()
+                station.start()
+                station.input()
+            return "Processo em modo de armazenamento."
         elif flow == "assemble":
-            pass
-
+            for station in process.stations:
+                station.reset()
+                station.start()
+                station.output()
+            return "Processo em modo de montagem."
         else:
-            pass #Algum estação já está em processo
+            return "Tipo de processo desconhecido."
     
 
 print(process.status(3))

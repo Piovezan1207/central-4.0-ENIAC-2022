@@ -20,6 +20,3 @@ order = {
         }]
 }
 
-station3_.input()
-
-print(station3_.status)
