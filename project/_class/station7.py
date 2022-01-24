@@ -21,14 +21,16 @@ class station7(generic_station):
             B2 = False
         elif color.upper() == "SILVER":
             B1 = False
-            B2 = True
+            B2 = True 
 
         self.writeBits(6, B1)
         self.writeBits(7, B2)
         self.writeBits(8, False)
         
-        # super().output()
-
         time.sleep(0.1)
         self.pulseBit(9)
+
+        self.status = "#{}S0D".format(self.clpNumber)
+
+        return True , self.status
 

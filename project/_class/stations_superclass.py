@@ -37,9 +37,9 @@ class stations_superclass:
     
     def pulseBit(self, bitAddress):
         self.writeBits(bitAddress, True)
-        time.sleep(0.1)
+        # time.sleep(0.1)
         self.writeBits(bitAddress, False)
-        time.sleep(0.1)
+        # time.sleep(0.1)
     
     def connctionTest(self):
         initialValue = self.readBits(self.bit_test_test, 1)[0]
@@ -49,6 +49,7 @@ class stations_superclass:
         if(not initialValue  and finalValue):
             return True
         else:
+            self.status = "#{}E01".format(self.clpNumber)
             raise errors.connection_error(self.clpNumber , self.ip, self.bit_test_test)
             return False
 
