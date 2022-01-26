@@ -12,7 +12,7 @@ except:
     from project._class.station1 import station1
     from project._class.station7 import station7
     
-
+#Estações da planta
 stations = {
     1 : station1(1, "192.168.2.10"), 
     2 : generic_station(2, "192.168.2.20"), 
@@ -23,13 +23,21 @@ stations = {
 }
 
 
+#Classe com todos os atributos do processo como um todo
 class process:
-
 
     def __init__(self) -> None:
         pass
 
     @staticmethod
+    #Verifica o status de uma estação escolhida, gerando um código que indicará a sua situação.
+    #                                       Legenda
+    # #   - Inicio do código
+    # X   - Número da respectiva estação
+    # T/F - Estação iniciada
+    # T/F - Estação parada
+    # T/F - Estção em processo
+    # I/O/F - Estação em modo entrada (I), saída(O) ou sem direção (F)
     def status(station):
         temp_bits = station.readBits(0, 6)
 
@@ -44,6 +52,11 @@ class process:
         return "#{}{}{}{}{}".format(station.clpNumber,started,stop,process_,direction)        
     
     @staticmethod
+    #Verifica se alguma estação está em processo, e gera uma lista de status básico de todas as estações
+    #                           retorna
+    # 0 - True : Se a planta estiver livre e sem processos / False :  Se houver uma estação em processo
+    # 1 - []   : Retorna a lista do status de todas as estações
+    # 2 - []   : Retorna a lista de status apenas das estações em processo
     def process():
         stationsInProcess = []
         status = []
@@ -57,8 +70,13 @@ class process:
             return True, status
         else:
             return False, status , stationsInProcess 
-
+    
     @staticmethod
+    #Verifica qual a direção atual que a planta está operando
+    #                   retorna
+    # False      : Caso não tenha uma direção definida (Acontece se a estações não estiverem sincronizadas)
+    # "storage"  : Caso a estação esteja no modo armazenamento (storage)
+    # "assemble" : Caso a estação esteja no modo de montagem (assemble) 
     def defineDirection(var):
         var = var[1]
 
@@ -71,11 +89,25 @@ class process:
 
 
     @staticmethod
+    #Define uma direção para a planta atuar (Esse método deve ser chamado através do método direction()!)
+    #                       retorna
+    # 0 : bool : 
+    #            True - Caso a planta já esteja no sentido desejado
+    #                   Caso a planta entre no modo desejado
+    #
+    #            False - Caso alguma estação já esteja em processo 
+    #                    Comando desconhecido
+    #
+    # 1 : []   : Lista de menssagen para a confecção do log (Através dela é possível saber tudo que aconteceu no processo)
     def direction_(flow):
         messages_list = []
         process_ =  process.process()
         actualDirection = process.defineDirection(process_)
         
+        messages_list.append("Actual direction: {}".format(actualDirection))
+        messages_list.append("Command: direction - {}".format(flow))
+        messages_list.append("Stations status: {}".format(process_[1]))
+
         if actualDirection == flow:
             if actualDirection == "storage":
                 stations[1].start()
@@ -91,7 +123,7 @@ class process:
             return False , messages_list  #"Alguma estação está em processo, aguarde para fazer um novo chamado"
         
         print(process_[1])
-        print (actualDirection)
+        # print (actualDirection)
         
         if flow == "storage":
             messages_list.append(stations[5].stop()[1])
@@ -118,15 +150,30 @@ class process:
             return False , messages_list #"Tipo de processo desconhecido."
     
     @staticmethod
-    def assemblyColor(color):
+    #Inicia a montagem de uma cor espessífica
+    #               retorna 
+    # 0 : bool : 
+    #            True - Pedido de montagem feito com sucesso
+    #            
+    #            False - Cor escolhida não existe
+    #                    A planta não está em modo montagem (assemble)
+    #
+    # 1 : []   : Lista de menssagen para a confecção do log (Através dela é possível saber tudo que aconteceu no processo)
+    def assemblyColor_(color):
         messages_list = []
         process_ =  process.process()
         actualDirection = process.defineDirection(process_)
+
+        messages_list.append("Command: assemblyColor - {}".format(color))
+        messages_list.append("Stations status: {}".format(process_[1]))
 
         if actualDirection == "assemble":
             acceptColors = ["BLACK" , "RED" , "SILVER"]
             if color.upper() in acceptColors:
                 stations[7].outputStartWithColor(color)
+                status = "#XS0D"
+                messages_list.append(status)
+                return True , messages_list
             else:
                 print("Erro na cor escolhida, verifique a string e tente novamente.\nCores aceitas : {}".format(acceptColors))
                 status = "#XE06"
@@ -139,23 +186,38 @@ class process:
             return False , messages_list
 
     @staticmethod
+    #Define a direção e cria o log
     def direction(flow):
+        resp = process.direction_(flow)
+        process.makeLog(resp[1])
+        return resp
+    
+    @staticmethod
+    #Faz o pedido da cor e cria o log
+    def assemblyColor(color):
+        resp = process.assemblyColor_(color)
+        process.makeLog(resp[1])
+        return resp
+    
+    @staticmethod
+    #Cria o log em um arquivo TXT
+    def makeLog(info):
         path = "{}\{}".format(os.getcwd(), "logs.txt")
         logs = open(path , 'r')
         conteudo = logs.readlines()
-        
-        resp = process.direction_(flow)
-        for i in resp[1]:
+        for i in info:
             conteudo.append("{} : {}\n".format(datetime.datetime.now() , i))
         conteudo.append("---------------------------\n")
         logs = open(path , 'w')
         logs.writelines(conteudo)
         logs.close()
-        return resp
 
-
-
-# process.direction("assemble")
-process.direction("storage")
-# stations[7].reset()
-# process.assemblyColor("black")
+    @staticmethod
+    #Retorna todos os status que essa classe criou, para ser enviado para a API
+    def allStatus():
+        status = []
+        process_ = process.process()
+        status.append(process_)
+        actualDirection = process.defineDirection(process_)
+        status.append(actualDirection)
+        return status

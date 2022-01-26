@@ -63,7 +63,7 @@ class generic_station(stations_superclass):
             self.writeBits(self.bit_outputMode_outputMode, False)
             self.status = "#{}S07".format(self.clpNumber)#"A estação já está em modo entrada."
             return True , self.status
-    
+
     def output(self, _defaultInit = False, _result = []):
         result = _result if _defaultInit else  self.defaultInit()
         self.status = "#{}S08".format(self.clpNumber)#"Estação em modo saída."
