@@ -167,3 +167,73 @@
 ---------------------------
 2022-01-26 13:33:32.096673 : #5S0A
 ---------------------------
+2022-01-27 17:44:36.388796 : Actual direction: storage
+2022-01-27 17:44:36.388796 : Command: direction - storage
+2022-01-27 17:44:36.388796 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:44:36.388796 : #XS10
+---------------------------
+2022-01-27 17:47:01.547238 : Actual direction: storage
+2022-01-27 17:47:01.547238 : Command: direction - storage
+2022-01-27 17:47:01.547238 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:47:01.547238 : #XS10
+---------------------------
+2022-01-27 17:47:49.700556 : Actual direction: storage
+2022-01-27 17:47:49.700556 : Command: direction - storage
+2022-01-27 17:47:49.700556 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:47:49.700556 : #XS10
+---------------------------
+2022-01-27 17:48:57.629227 : Actual direction: storage
+2022-01-27 17:48:57.629227 : Command: direction - storage
+2022-01-27 17:48:57.629227 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:48:57.629227 : #XS10
+---------------------------
+2022-01-27 17:49:44.967967 : Actual direction: storage
+2022-01-27 17:49:44.967967 : Command: direction - storage
+2022-01-27 17:49:44.967967 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:49:44.967967 : #XS10
+---------------------------
+2022-01-27 17:51:29.166306 : Actual direction: storage
+2022-01-27 17:51:29.166306 : Command: direction - storage
+2022-01-27 17:51:29.166306 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:51:29.166306 : #XS10
+---------------------------
+2022-01-27 17:51:48.226202 : Actual direction: storage
+2022-01-27 17:51:48.226202 : Command: direction - storage
+2022-01-27 17:51:48.226202 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:51:48.226202 : #XS10
+---------------------------
+2022-01-27 17:52:06.565770 : Actual direction: storage
+2022-01-27 17:52:06.565770 : Command: direction - storage
+2022-01-27 17:52:06.565770 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:52:06.565770 : #XS10
+---------------------------
+2022-01-27 17:58:54.462453 : Actual direction: storage
+2022-01-27 17:58:54.462453 : Command: direction - storage
+2022-01-27 17:58:54.462453 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:58:54.462453 : #XS10
+---------------------------
+2022-01-27 17:59:21.423366 : Actual direction: storage
+2022-01-27 17:59:21.423366 : Command: direction - storage
+2022-01-27 17:59:21.423366 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:59:21.423366 : #XS10
+---------------------------
+2022-01-27 17:59:45.962647 : Actual direction: storage
+2022-01-27 17:59:45.962647 : Command: direction - storage
+2022-01-27 17:59:45.962647 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 17:59:45.962647 : #XS10
+---------------------------
+2022-01-27 18:01:07.062151 : Actual direction: storage
+2022-01-27 18:01:07.062151 : Command: direction - storage
+2022-01-27 18:01:07.062151 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 18:01:07.062151 : #XS10
+---------------------------
+2022-01-27 18:01:51.375798 : Actual direction: storage
+2022-01-27 18:01:51.375798 : Command: direction - storage
+2022-01-27 18:01:51.375798 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 18:01:51.375798 : #XS10
+---------------------------
+2022-01-27 18:05:20.315099 : Actual direction: storage
+2022-01-27 18:05:20.315099 : Command: direction - storage
+2022-01-27 18:05:20.315099 : Stations status: ['#1FFFF', '#2TFFF', '#3TFFI', '#5FTFF', '#6TFFI', '#7TFFI']
+2022-01-27 18:05:20.315099 : #XS10
+---------------------------

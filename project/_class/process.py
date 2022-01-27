@@ -1,16 +1,26 @@
 from msilib.schema import Directory
 import datetime
 import os
-try:
-    from stations_superclass import stations_superclass
-    from generic_station import generic_station
-    from station1 import station1
-    from station7 import station7
-except:
-    from project._class.stations_superclass import stations_superclass
-    from project._class.generic_station import generic_station
-    from project._class.station1 import station1
-    from project._class.station7 import station7
+
+if __name__ == "__main__":
+    from thread_ import VerifyFinishProcessThread , statusProcessThread, GetColorFromStorage
+from stations_superclass import stations_superclass
+from generic_station import generic_station
+from station1 import station1
+from station7 import station7
+
+# try:
+#     from stations_superclass import stations_superclass
+#     from generic_station import generic_station
+#     from station1 import station1
+#     from station7 import station7
+#     from thread_ import VerifyFinishProcessThread , statusProcessThread, GetColorFromStorage
+# except:
+#     from project._class.stations_superclass import stations_superclass
+#     from project._class.generic_station import generic_station
+#     from project._class.station1 import station1
+#     from project._class.station7 import station7
+#     from project._class.thread_ import VerifyFinishProcessThread , statusProcessThread, GetColorFromStorage
     
 #Estações da planta
 stations = {
@@ -25,6 +35,9 @@ stations = {
 
 #Classe com todos os atributos do processo como um todo
 class process:
+
+    ThreadsStorage = []
+    ThreadsAssemble = []
 
     def __init__(self) -> None:
         pass
@@ -111,6 +124,8 @@ class process:
         if actualDirection == flow:
             if actualDirection == "storage":
                 stations[1].start()
+                if process.ThreadsStorage == []:
+                    process.ThreadsStorage.append(GetColorFromStorage())
             
             status = "#XS10" if actualDirection == "storage" else "#XS11"
             messages_list.append(status)
@@ -126,6 +141,7 @@ class process:
         # print (actualDirection)
         
         if flow == "storage":
+            if process.ThreadsAssemble != []: process.killThread(process.ThreadsAssemble)
             messages_list.append(stations[5].stop()[1])
             stations_to_command = [1,2,3,6,7]
             for num in stations_to_command:
@@ -133,8 +149,11 @@ class process:
                 messages_list.append(stations[num].input()[1])
             status = "#XS0E"
             messages_list.append(status)
+            process.ThreadsStorage.append(GetColorFromStorage())
             return True, messages_list# "Processo em modo de armazenamento."
+
         elif flow == "assemble":
+            if process.ThreadsStorage != []: process.killThread(process.ThreadsStorage)
             messages_list.append(stations[1].stop()[1])
             messages_list.append(stations[2].stop()[1])
             stations_to_command = [3,5,6,7]
@@ -144,6 +163,7 @@ class process:
             status = "#XS0E"
             messages_list.append(status)
             return True, messages_list # "Processo em modo de montagem."
+
         else:
             status = "#XE05"
             messages_list.append(status)
@@ -221,3 +241,21 @@ class process:
         actualDirection = process.defineDirection(process_)
         status.append(actualDirection)
         return status
+
+    @staticmethod
+    #Sanaliza quando uma peça entrou na estação 7 e a sua cor está disponível para ser capturada no MODBUS
+    def readColorsStorage():
+        return stations[7].readColorsStorage()
+    
+    @staticmethod
+    #Finaliza todas as threads relativas ao modo entrada ou saída
+    def killThread(listThreadToKill):
+        for threadKill  in listThreadToKill:
+            threadKill.stopThread()
+            threadKill.join()
+
+if __name__ == "__main__":
+    process.direction("storage")
+
+    while True:
+        pass

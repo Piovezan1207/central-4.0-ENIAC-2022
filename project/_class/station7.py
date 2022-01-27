@@ -34,3 +34,13 @@ class station7(generic_station):
 
         return True , self.status
 
+    def readColorsStorage(self):
+        if self.readBits(10 , 1)[0]:
+            B = self.readBits(6 , 3)
+            self.pulseBit(10)
+            return True , B
+        else:
+            return False , False
+
+
+

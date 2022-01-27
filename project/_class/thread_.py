@@ -54,10 +54,34 @@ class statusProcessThread(Thread):
             time.sleep(self.temp)
 
 
-x = VerifyFinishProcessThread()
-y = statusProcessThread()
-# x.stopThread()
-# x.join()
+class GetColorFromStorage(Thread):
 
-while True:
-    pass
+    stopFlag = False
+
+    def __init__(self , temp=2) -> None:
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+        self.temp = temp
+
+    def run(self):
+        while True:
+            resp = process.readColorsStorage()
+            if self.stopFlag: break
+
+            if resp[0]:
+                sys.stdout.write("Uma peça deu entrada na estação 7!\nSeu código de cor é: {}\n".format(resp[1]))
+                sys.stdout.flush()
+            else:
+                sys.stdout.write("Nenhuma peça deu entrada\n")
+                sys.stdout.flush()
+                time.sleep(self.temp)
+
+    def stopThread(self):
+        self.stopFlag = True
+
+
+
+
+
+
