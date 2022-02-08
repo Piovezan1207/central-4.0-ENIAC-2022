@@ -10,8 +10,6 @@ class station5(generic_station):
 
     def __init__(self,clpNumber  , ip , port = 502, temp = 5) -> None:
         super().__init__(clpNumber, ip , port)
-        # self.start()
-        # self.join()
         self.temp = temp
 
     def confirmProcess(self):

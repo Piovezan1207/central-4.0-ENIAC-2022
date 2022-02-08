@@ -123,8 +123,11 @@ class process(thread_):
 
         if actualDirection == flow: #A direção atual das estações já corresponde ao que foi pedido
             if actualDirection == "storage":
-                stations[1].startStation() #Inicia a estação 1, pois ela deve sempre receber um comando de start para liberar as peças
-                stations_to_command = [1,2,3,6,7] #Lista de estações para comandar
+                status_temp_1 = stations[1].startStation() #Inicia a estação 1, pois ela deve sempre receber um comando de start para liberar as peças
+                messages_list.append(status_temp_1[1])
+                if status_temp_1[1] == "#1E09":
+                    return False , messages_list
+                stations_to_command = [2,3,6,7] #Lista de estações para comandar
                 for num in stations_to_command: #Inicia todas as estações da lista
                     #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
                     #   teoricamente todas as estações já estão iniciadas.
@@ -157,7 +160,11 @@ class process(thread_):
                 status = process.killThread(process.ThreadsAssemble, "5")
                 messages_list.append(status)
             messages_list.append(stations[5].stopStation()[1])
-            stations_to_command = [1,2,3,6,7]
+            status_temp_1 = stations[1].startStation() #Inicia a estação 1, pois ela deve sempre receber um comando de start para liberar as peças
+            messages_list.append(status_temp_1[1])
+            if status_temp_1[1] == "#1E09": #Caso não tenha peças no magazine, nada mais será iniciado.
+                return False , messages_list
+            stations_to_command = [2,3,6,7]
             for num in stations_to_command:
                 messages_list.append(stations[num].startStation()[1])
                 messages_list.append(stations[num].input()[1])

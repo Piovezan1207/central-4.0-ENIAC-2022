@@ -65,12 +65,3 @@ class station7(generic_station):
                 sys.stdout.flush()
                 time.sleep(self.temp)
 
-
-
-
-
-
-
-teste = station7(7, "192.168.2.70")
-teste.input()
-# teste.outputStartWithColor("BLACk")
