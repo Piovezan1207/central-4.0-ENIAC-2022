@@ -8,14 +8,14 @@ class generic_station(stations_superclass):
 
     status = ""
 
-    def __init__(self,clpNumber , ip , port = 502) -> None:
-        super().__init__(clpNumber , ip , port)
+    def __init__(self,clpNumber , ip , temp = 5 , port = 502, ) -> None:
+        super().__init__(clpNumber , ip , temp , port)
 
     def defaultInit(self):
         self.connctionTest()
         return self.readBits(0, 8)
 
-    def start(self, _defaultInit = False, _result = []):
+    def startStation(self, _defaultInit = False, _result = []):
         result = _result if _defaultInit else  self.defaultInit()
         self.status = "#{}S00".format(self.clpNumber) #"Iniciando a estação."
         if  not result[self.bit_start_start] and not result[self.bit_stop_stop]:
@@ -30,7 +30,7 @@ class generic_station(stations_superclass):
             self.status = "#{}S02".format(self.clpNumber)#"A estação já está iniciada."
             return True , self.status
 
-    def stop(self, _defaultInit = False, _result = []):
+    def stopStation(self, _defaultInit = False, _result = []):
         result = _result if _defaultInit else  self.defaultInit()
         self.status = "#{}S03".format(self.clpNumber)#"Parando a estação."
         if (not result[self.bit_stop_stop]):
@@ -40,7 +40,7 @@ class generic_station(stations_superclass):
             self.status = "#{}S04".format(self.clpNumber)#"A estação já está parada"
             return True , self.status
     
-    def reset(self, _defaultInit = False, _result = []):
+    def resetStation(self, _defaultInit = False, _result = []):
         result = _result if _defaultInit else  self.defaultInit()
         self.status = "#{}S05".format(self.clpNumber)#"Reiniciando a estação"
         if not result[self.bit_stop_stop]:

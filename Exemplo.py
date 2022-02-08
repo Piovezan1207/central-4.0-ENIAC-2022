@@ -197,8 +197,17 @@ def estacao7(tipo , cor):
     else:
         print("Erro na string do tipo")
 
-tipo = "saida"
+# tipo = "entrada"
 
 # estacao3(tipo)
 # estacao6(tipo)
-estacao7(tipo , "preto")
+# estacao7(tipo , "vermelho")
+
+
+client2 = ModbusTcpClient('192.168.2.20',port=502) #estação 7
+
+
+client2.write_coils(2,[True]*1) #Seta o bit de home
+# time.sleep(0.1)
+# client2.write_coils(2,[False]*1) #Reseta o bit de home
+# time.sleep(0.1)

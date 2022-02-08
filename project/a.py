@@ -1,25 +1,21 @@
 from threading import Thread
+import time
 
 class myClassA(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.daemon = True
-        self.start()
+        
     def run(self):
         while True:
+            time.sleep(1)
             print ('A')
 
-class myClassB(Thread):
-    def __init__(self):
-        Thread.__init__(self)
-        self.daemon = True
-        self.start()
-    def run(self):
-        while True:
-            print ('B')
 
 
-myClassA()
-myClassB()
+x = myClassA()
+time.sleep(10)
+x.start()
 while True:
-    pass
+    print("teste")
+    time.sleep(2)

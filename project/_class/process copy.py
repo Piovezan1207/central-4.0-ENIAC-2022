@@ -4,7 +4,6 @@ import os
 import time
 
 try:
-    from stations_superclass import stations_superclass
     from generic_station import generic_station
     from station1 import station1
     from station5 import station5
@@ -12,13 +11,11 @@ try:
     from thread_ import thread_
 
 except:
-    from project._class.stations_superclass import stations_superclass
     from project._class.generic_station import generic_station
     from project._class.station1 import station1
     from project._class.station5 import station5
     from project._class.station7 import station7
-    from  project._class.thread_ import thread_
-
+    from project._class.thread_ import thread_
     
 #Estações da planta
 stations = {
@@ -43,7 +40,7 @@ class process(thread_):
         self.daemon = True
         pass
 
-    @staticmethod
+    # @staticmethod
     #Verifica o status de uma estação escolhida, gerando um código que indicará a sua situação.
     #                                       Legenda
     # #   - Inicio do código
@@ -52,7 +49,7 @@ class process(thread_):
     # T/F - Estação parada
     # T/F - Estção em processo
     # I/O/F - Estação em modo entrada (I), saída(O) ou sem direção (F)
-    def status(station):
+    def status(self, station):
         temp_bits = station.readBits(0, 6)
 
         started = "T" if temp_bits[0] else "F" 
@@ -65,17 +62,17 @@ class process(thread_):
 
         return "#{}{}{}{}{}".format(station.clpNumber,started,stop,process_,direction)        
     
-    @staticmethod
+    # @staticmethod
     #Verifica se alguma estação está em processo, e gera uma lista de status básico de todas as estações
     #                           retorna
     # 0 - True : Se a planta estiver livre e sem processos / False :  Se houver uma estação em processo
     # 1 - []   : Retorna a lista do status de todas as estações
     # 2 - []   : Retorna a lista de status apenas das estações em processo
-    def process():
+    def process(self):
         stationsInProcess = []
         status = []
         for num in stations:
-            tempStatus = process.status(stations[num])
+            tempStatus = self.status(stations[num])
             status.append(tempStatus)
             if tempStatus[4] == "T":
                 stationsInProcess.append(tempStatus)
@@ -85,13 +82,13 @@ class process(thread_):
         else:
             return False, status , stationsInProcess 
     
-    @staticmethod
+    # @staticmethod
     #Verifica qual a direção atual que a planta está operando
     #                   retorna
     # False      : Caso não tenha uma direção definida (Acontece se a estações não estiverem sincronizadas)
     # "storage"  : Caso a estação esteja no modo armazenamento (storage)
     # "assemble" : Caso a estação esteja no modo de montagem (assemble) 
-    def defineDirection(var):
+    def defineDirection(self, var):
         var = var[1]
 
        #Analisa as unicas estações que precisam de direção
@@ -101,7 +98,8 @@ class process(thread_):
 
         return "storage" if var[2][5] == "I" else "assemble"
 
-    @staticmethod
+
+    # @staticmethod
     #Define uma direção para a planta atuar (Esse método deve ser chamado através do método direction()!)
     #                       retorna
     # 0 : bool : 
@@ -112,33 +110,23 @@ class process(thread_):
     #                    Comando desconhecido
     #
     # 1 : []   : Lista de menssagen para a confecção do log (Através dela é possível saber tudo que aconteceu no processo)
-    def direction_(flow):
+    def direction_(self, flow):
         messages_list = []
-        process_ =  process.process()
-        actualDirection = process.defineDirection(process_)
+        process_ =  self.process()
+        actualDirection =self.defineDirection(process_)
         
         messages_list.append("Actual direction: {}".format(actualDirection))
         messages_list.append("Command: direction - {}".format(flow))
         messages_list.append("Stations status: {}".format(process_[1]))
 
-        if actualDirection == flow: #A direção atual das estações já corresponde ao que foi pedido
+        if actualDirection == flow:
             if actualDirection == "storage":
-                stations[1].startStation() #Inicia a estação 1, pois ela deve sempre receber um comando de start para liberar as peças
-                stations_to_command = [1,2,3,6,7] #Lista de estações para comandar
-                for num in stations_to_command: #Inicia todas as estações da lista
-                    #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
-                    #   teoricamente todas as estações já estão iniciadas.
-                    messages_list.append(stations[num].startStation()[1])
-                if process.ThreadsStorage == []: #Se a thread já não estiver rodando
-                    process.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
+                stations[1].startStation()
+                if self.ThreadsStorage == []:
+                    self.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
             else:
-                stations_to_command = [3,5,6,7]#Lista de estações para comandar
-                for num in stations_to_command:#Inicia todas as estações da lista
-                    #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
-                    #   teoricamente todas as estações já estão iniciadas.
-                    messages_list.append(stations[num].startStation()[1])
-                if process.ThreadsStorage == []: #Se a thread já não estiver rodando
-                    process.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
+                if self.ThreadsStorage == []:
+                    self.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
             status = "#XS10" if actualDirection == "storage" else "#XS11"
             messages_list.append(status)
             return True , messages_list
@@ -153,8 +141,8 @@ class process(thread_):
         # print (actualDirection)
         
         if flow == "storage":
-            if process.ThreadsAssemble != []: 
-                status = process.killThread(process.ThreadsAssemble, "5")
+            if self.ThreadsAssemble != []: 
+                status = self.killThread(process.ThreadsAssemble, "5")
                 messages_list.append(status)
             messages_list.append(stations[5].stopStation()[1])
             stations_to_command = [1,2,3,6,7]
@@ -163,14 +151,14 @@ class process(thread_):
                 messages_list.append(stations[num].input()[1])
             status = "#XS0E"
             messages_list.append(status)
-            process.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
+            self.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
             status = "#7S13"
             messages_list.append(status)
             return True, messages_list# "Processo em modo de armazenamento."
 
         elif flow == "assemble":
-            if process.ThreadsAssemble != []: 
-                status = process.killThread(process.ThreadsAssemble , "7")
+            if self.ThreadsAssemble != []: 
+                status = self.killThread(process.ThreadsAssemble , "7")
                 messages_list.append(status)
             messages_list.append(stations[1].stopStation()[1])
             messages_list.append(stations[2].stopStation()[1])
@@ -180,7 +168,7 @@ class process(thread_):
                 messages_list.append(stations[num].output()[1])
             status = "#XS0E"
             messages_list.append(status)
-            process.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
+            self.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
             status = "#5S13"
             messages_list.append(status)
             return True, messages_list # "Processo em modo de montagem."
@@ -190,7 +178,7 @@ class process(thread_):
             messages_list.append(status)
             return False , messages_list #"Tipo de processo desconhecido."
     
-    @staticmethod
+    # @staticmethod
     #Inicia a montagem de uma cor espessífica
     #               retorna 
     # 0 : bool : 
@@ -200,10 +188,10 @@ class process(thread_):
     #                    A planta não está em modo montagem (assemble)
     #
     # 1 : []   : Lista de menssagen para a confecção do log (Através dela é possível saber tudo que aconteceu no processo)
-    def assemblyColor_(color):
+    def assemblyColor_(self, color):
         messages_list = []
-        process_ =  process.process()
-        actualDirection = process.defineDirection(process_)
+        process_ =  self.process()
+        actualDirection = self.defineDirection(process_)
 
         messages_list.append("Command: assemblyColor - {}".format(color))
         messages_list.append("Stations status: {}".format(process_[1]))
@@ -214,8 +202,8 @@ class process(thread_):
                 stations[7].outputStartWithColor(color)
                 status = "#XS0D"
                 messages_list.append(status)
-                if process.ThreadsStorage == []:
-                    process.ThreadsStorage.append(stations[5].start())
+                if self.ThreadsStorage == []:
+                    self.ThreadsStorage.append(stations[5].start())
                 return True , messages_list
             else:
                 print("Erro na cor escolhida, verifique a string e tente novamente.\nCores aceitas : {}".format(acceptColors))
@@ -228,23 +216,23 @@ class process(thread_):
             messages_list.append(status)
             return False , messages_list
 
-    @staticmethod
+    # @staticmethod
     #Define a direção e cria o log
-    def direction(flow):
-        resp = process.direction_(flow)
-        process.makeLog(resp[1])
+    def direction(self, flow):
+        resp = self.direction_(flow)
+        self.makeLog(resp[1])
         return resp
     
-    @staticmethod
+    # @staticmethod
     #Faz o pedido da cor e cria o log
-    def assemblyColor(color):
-        resp = process.assemblyColor_(color)
-        process.makeLog(resp[1])
+    def assemblyColor(self ,color):
+        resp = self.assemblyColor_(color)
+        self.makeLog(resp[1])
         return resp
     
-    @staticmethod
+    # @staticmethod
     #Cria o log em um arquivo TXT
-    def makeLog(info):
+    def makeLog(self, info):
         path = "{}\{}".format(os.getcwd(), "logs.txt")
         logs = open(path , 'r')
         conteudo = logs.readlines()
@@ -255,24 +243,24 @@ class process(thread_):
         logs.writelines(conteudo)
         logs.close()
 
-    @staticmethod
+    # @staticmethod
     #Retorna todos os status que essa classe criou, para ser enviado para a API
-    def allStatus():
+    def allStatus(self):
         status = []
-        process_ = process.process()
+        process_ = self.process()
         status.append(process_)
-        actualDirection = process.defineDirection(process_)
+        actualDirection = self.defineDirection(process_)
         status.append(actualDirection)
         return status
 
-    @staticmethod
+    # @staticmethod
     #Sanaliza quando uma peça entrou na estação 7 e a sua cor está disponível para ser capturada no MODBUS
-    def readColorsStorage():
+    def readColorsStorage(self):
         return stations[7].readColorsStorage()
     
-    @staticmethod
+    # @staticmethod
     #Finaliza todas as threads relativas ao modo entrada ou saída
-    def killThread(listThreadToKill , num = "X"):
+    def killThread(self, listThreadToKill , num = "X"):
         for threadKill  in listThreadToKill:
             threadKill.stopThread()
             threadKill.join()
@@ -282,18 +270,21 @@ class process(thread_):
     def run(self):
         while True:
             if self.stopFlag: break
-            status = process.allStatus()
+            status = self.allStatus()
             print(status)
             time.sleep(self.temp)
 
 if __name__ == "__main__":
-    # stations[6].resetStation()
-    process.direction("storage")
-    # process.assemblyColor("black")
+
+    teste = process()
+    teste.direction("assemble")
+    # stations[1].stopStation()
+    # self.direction("storage")
+    teste.assemblyColor("black")
     # time.sleep(15)
-    # process.assemblyColor("red")
+    # self.assemblyColor("red")
     # time.sleep(15)
-    # process.assemblyColor("silver")
+    # self.assemblyColor("silver")
     # time.sleep(15)
     while True:
         pass

@@ -5,13 +5,15 @@ from dotenv import load_dotenv
 
 try:
     import errors
+    from thread_ import thread_
 except:
     from project._class import errors
+    from project._class.thread_ import thread_
 
 load_dotenv()
 
 # Stations superclass
-class stations_superclass:
+class stations_superclass(thread_):
 
     #Os BITs a seguir são padronizados nos códigos dos CLPs e tem funções parecidas, porém em modo entrada e saída
     #                                                               >>ENTRADA<<              >>SAÍDA<<
@@ -22,7 +24,9 @@ class stations_superclass:
     bit_outputMode_outputMode=int(os.getenv("bit_outputMode_outputMode"))#Seta o modo de saída    Verifica se a estação está em modo de saída
     bit_test_test=int(os.getenv("bit_test_test"))                        #Teste de conexão        Teste de conexão - resposta da estação
 
-    def __init__(self, clpNumber, ip , port = 502) -> None:
+    def __init__(self, clpNumber, ip , temp , port = 502  ) -> None:
+        super().__init__( temp )
+        self.daemon = True
         self.ip = ip
         self.port = port
         self.clpNumber = clpNumber
