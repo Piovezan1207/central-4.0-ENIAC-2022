@@ -1,0 +1,34 @@
+TABELA DE CÓDIGOS,,
+TIPO,CÓDIGO,DESCRIÇÃO
+S,0,A estação foi iniciada
+S,1,"A estação estava parada, foi reiniciada e iniciada."
+S,2,A estação já estava iniciada.
+S,3,A estação foi parada.
+S,4,A estação já estava parada.
+S,5,A estação foi reiniciada.
+S,6,Estação colocada em modo entrada.
+S,7,Estação já está em modo entrada.
+S,8,Estação colocada em modo saída.
+S,9,Estação já estava em modod saída.
+S,A,Estação processou uma peça.
+S,B,Estação em processo.
+S,C,Processo livre.
+S,D,Pedido de montagem feito com sucesso.
+S,E,Processo em modo armazenamento.
+S,F,Processo em modo montagem.
+S,10,O processo já está em modo armazenamento.
+S,11,O processo já está em modo montagem.
+S,12,Estação 5 não processou.
+S,13,Thread iniciada.
+S,14,Thread finalizada.
+S,15,
+S,16,
+S,17,
+S,18,
+S,19,
+S,1A,
+S,1B,
+S,1C,
+S,1D,
+S,1E,
+S,1F,

@@ -1,0 +1,35 @@
+TABELA DE CÓDIGOS,,
+TIPO,CÓDIGO,DESCRIÇÃO
+E,0,Falha na conexão com o CLP.
+E,1,Falha no teste de resposta do CLP.
+E,2,Falha na conexão com o compressor.
+E,3,Linha sem pressão pneumática.
+E,4,Falha na comunicação com o robô.
+E,5,Tipo de processo desconhecido.
+E,6,Cor escolhida desconhecida.
+E,7,A montage de uma peça só pode ser feita no modo assemble.
+E,8,Algama estação está em processo.
+E,9,Estação 1 sem preças disponíveis.
+E,A,
+E,B,
+E,C,
+E,D,
+E,E,
+E,F,
+E,10,
+E,11,
+E,12,
+E,13,
+E,14,
+E,15,
+E,16,
+E,17,
+E,18,
+E,19,
+E,1A,
+E,1B,
+E,1C,
+E,1D,
+E,1E,
+E,1F,
+E,FF,ERRO DESCONHECIDO.
