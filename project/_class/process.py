@@ -132,36 +132,34 @@ class process(thread_):
                     #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
                     #   teoricamente todas as estações já estão iniciadas.
                     messages_list.append(stations[num].startStation()[1])
-                if process.ThreadsStorage == []: #Se a thread já não estiver rodando
-                    process.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
+                if not stations[7].is_alive(): #Se a thread já não estiver rodando
+                    stations[7].start()#Roda a thread da estação 7 que verifica a entrada de peças
             else:
                 stations_to_command = [3,5,6,7]#Lista de estações para comandar
                 for num in stations_to_command:#Inicia todas as estações da lista
                     #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
                     #   teoricamente todas as estações já estão iniciadas.
                     messages_list.append(stations[num].startStation()[1])
-                if process.ThreadsStorage == []: #Se a thread já não estiver rodando
-                    process.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
+                if not stations[5].is_alive(): #Se a thread já não estiver rodando
+                    stations[5].start()#Roda a thread da estação 5 que verifica a saída de peças
             status = "#XS10" if actualDirection == "storage" else "#XS11"
             messages_list.append(status)
             return True , messages_list
         
         if not process_[0] :
-            print(process_[1])
             status = "#XE08"
             messages_list.append(status)
             return False , messages_list  #"Alguma estação está em processo, aguarde para fazer um novo chamado"
         
-        print(process_[1])
-        # print (actualDirection)
-        
         if flow == "storage":
-            if process.ThreadsAssemble != []: 
-                status = process.killThread(process.ThreadsAssemble, "5")
+            if stations[5].is_alive(): 
+                status = process.killThread(stations[5], "5")
                 messages_list.append(status)
             messages_list.append(stations[5].stopStation()[1])
+
             status_temp_1 = stations[1].startStation() #Inicia a estação 1, pois ela deve sempre receber um comando de start para liberar as peças
             messages_list.append(status_temp_1[1])
+
             if status_temp_1[1] == "#1E09": #Caso não tenha peças no magazine, nada mais será iniciado.
                 return False , messages_list
             stations_to_command = [2,3,6,7]
@@ -170,14 +168,17 @@ class process(thread_):
                 messages_list.append(stations[num].input()[1])
             status = "#XS0E"
             messages_list.append(status)
-            process.ThreadsStorage.append(stations[7].start())#Roda a thread da estação 7 que verifica a entrada de peças
+            if not stations[7].is_alive():
+                stations[7].start()#Roda a thread da estação 7 que verifica a saída de peças
+            else:
+                print("Ué, 7 ta viva?")
             status = "#7S13"
             messages_list.append(status)
             return True, messages_list# "Processo em modo de armazenamento."
 
         elif flow == "assemble":
-            if process.ThreadsAssemble != []: 
-                status = process.killThread(process.ThreadsAssemble , "7")
+            if stations[7].is_alive(): 
+                status = process.killThread(stations[7], "7")
                 messages_list.append(status)
             messages_list.append(stations[1].stopStation()[1])
             messages_list.append(stations[2].stopStation()[1])
@@ -187,7 +188,10 @@ class process(thread_):
                 messages_list.append(stations[num].output()[1])
             status = "#XS0E"
             messages_list.append(status)
-            process.ThreadsStorage.append(stations[5].start())#Roda a thread da estação 5 que verifica a saída de peças
+            if not stations[5].is_alive():
+                stations[5].start()#Roda a thread da estação 5 que verifica a saída de peças
+            else:
+                print("Ué, 5 ta viva?")
             status = "#5S13"
             messages_list.append(status)
             return True, messages_list # "Processo em modo de montagem."
@@ -221,8 +225,8 @@ class process(thread_):
                 stations[7].outputStartWithColor(color)
                 status = "#XS0D"
                 messages_list.append(status)
-                if process.ThreadsStorage == []:
-                    process.ThreadsStorage.append(stations[5].start())
+                if not stations[5].is_alive():
+                    stations[5].start()
                 return True , messages_list
             else:
                 print("Erro na cor escolhida, verifique a string e tente novamente.\nCores aceitas : {}".format(acceptColors))
@@ -279,10 +283,11 @@ class process(thread_):
     
     @staticmethod
     #Finaliza todas as threads relativas ao modo entrada ou saída
-    def killThread(listThreadToKill , num = "X"):
-        for threadKill  in listThreadToKill:
-            threadKill.stopThread()
-            threadKill.join()
+    def killThread(classThreadToKill , num = "X"):
+        print("Devo matar a thread {}".format(num))
+
+        classThreadToKill.stopThread()
+        classThreadToKill.join()
         status = "#{}S14".format(num)
         return status
 
@@ -294,9 +299,9 @@ class process(thread_):
             time.sleep(self.temp)
 
 if __name__ == "__main__":
-    # stations[6].resetStation()
-    process.direction("storage")
-    # process.assemblyColor("black")
+    stations[1].stopStation()
+    process.direction("assemble")
+    process.assemblyColor("silver")
     # time.sleep(15)
     # process.assemblyColor("red")
     # time.sleep(15)

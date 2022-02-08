@@ -1,6 +1,13 @@
 import paho.mqtt.client as mqtt
 import os
 from dotenv import load_dotenv
+import json
+
+try:
+    from order import order
+except:
+    from project._class.order import order
+
 load_dotenv()
 
 
@@ -15,6 +22,8 @@ class mqttClient:
      "5" :  "Connection refused – not authorised",
      "6" :  "255: Currently unused."
     }
+
+    oder_list = []
 
     def __init__(self, broker = os.getenv("BOKER") , 
                        port = int(os.getenv("PORTABROKER")), 
@@ -48,5 +57,23 @@ class mqttClient:
 
     def on_message(self, client, userdata, msg):
         mensagem = msg.payload
-        print(mensagem)
+        try:
+            jsonCommands = json.loads(mensagem)
+        except:
+            print("Erro na json recebida")
+            return
+        print(jsonCommands)
+
+        if "type" in jsonCommands:
+            if jsonCommands["type"] == "assemble":
+                if "color" in jsonCommands:
+                    color = jsonCommands["color"]
+                    self.oder_list.append(order("assemble" , color))
+            elif jsonCommands["type"] == "storage":
+                self.oder_list.append(order("storage"))
+            else:
+                print("Tipo desconhecido...")
+        else:
+            print("False algo aqui...")
+        print(self.oder_list)
     

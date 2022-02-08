@@ -10,6 +10,8 @@ class station7(generic_station):
 
     def __init__(self,clpNumber  , ip , temp = 2 , port = 502) -> None:
         super().__init__(clpNumber, ip , temp , port)
+        self.pauseThread = True
+        self.start()
         self.temp = temp
 
     def outputStartWithColor(self, color):
@@ -47,21 +49,26 @@ class station7(generic_station):
 
     def run(self):
         while True:
-            resp = self.readColorsStorage()
             if self.stopFlag: break
 
-            if resp[0]:
-                color = ""
-                if resp[1][0] and not resp[1][1]:
-                    color = "BLACK"
-                elif not resp[1][0] and not resp[1][1]:
-                    color = "RED"
-                elif not resp[1][0] and  resp[1][1]:
-                    color = "SILVER"
-                sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
-                sys.stdout.flush()
+            if not self.pauseThread:
+                self.isRunning = True
+                resp = self.readColorsStorage()
+
+                if resp[0]:
+                    color = ""
+                    if resp[1][0] and not resp[1][1]:
+                        color = "BLACK"
+                    elif not resp[1][0] and not resp[1][1]:
+                        color = "RED"
+                    elif not resp[1][0] and  resp[1][1]:
+                        color = "SILVER"
+                    sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
+                    sys.stdout.flush()
+                else:
+                    sys.stdout.write(".7")
+                    sys.stdout.flush()
+                    time.sleep(self.temp)
             else:
-                sys.stdout.write(".")
-                sys.stdout.flush()
-                time.sleep(self.temp)
+                self.isRunning = False
 
