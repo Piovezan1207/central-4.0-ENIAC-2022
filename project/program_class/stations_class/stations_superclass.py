@@ -7,8 +7,8 @@ try:
     import errors
     from thread_ import thread_
 except:
-    from project._class import errors
-    from project._class.thread_ import thread_
+    from project.program_class.error_class import errors
+    from project.program_class.stations_class.thread_ import thread_
 
 load_dotenv()
 
@@ -54,7 +54,7 @@ class stations_superclass(thread_):
             return True
         else:
             self.status = "#{}E01".format(self.clpNumber)
-            raise errors.connection_error(self.clpNumber , self.ip, self.bit_test_test)
+            raise project.program_class.error_class.errors.connection_error(self.clpNumber , self.ip, self.bit_test_test)
             return False
 
 

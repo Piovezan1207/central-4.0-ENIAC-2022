@@ -2,7 +2,7 @@ from time import time
 try:
     from stations_superclass import stations_superclass
 except:
-    from project._class.stations_superclass import stations_superclass
+    from project.program_class.stations_class.stations_superclass import stations_superclass
     
 class generic_station(stations_superclass):
 

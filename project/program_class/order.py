@@ -2,7 +2,7 @@
 try:
     from process import process
 except:
-    from project._class.process import process
+    from project.program_class.process import process
 
 
 #Classe que define os pedidos feitos para a central

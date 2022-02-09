@@ -4,7 +4,7 @@ import sys
 try:
     from generic_station import generic_station
 except:
-    from project._class.generic_station import generic_station
+    from project.program_class.stations_class.generic_station import generic_station
 
 class station7(generic_station):
 
@@ -49,9 +49,6 @@ class station7(generic_station):
 
     def run(self):
         while True:
-            # sys.stdout.write("7 {} vivo".format(self.pauseThread))
-            # sys.stdout.flush()
-            # time.sleep(self.temp)
             if self.stopFlag: break
 
             if not self.pauseThread:
@@ -69,8 +66,6 @@ class station7(generic_station):
                     sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
                     sys.stdout.flush()
                 else:
-                    # sys.stdout.write(".7")
-                    # sys.stdout.flush()
                     time.sleep(self.temp)
             else:
                 self.isRunning = False

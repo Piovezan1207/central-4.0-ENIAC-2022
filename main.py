@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
 load_dotenv()
 
-from project._class.generic_station import generic_station
-from project._class.station1 import station1
-from project._class.station7 import station7
-from project._class.mqttClient import mqttClient
+from project.program_class.stations_class.generic_station import generic_station
+from project.program_class.stations_class.station1 import station1
+from project.program_class.stations_class.station7 import station7
+from project.program_class.mqtt_class.mqttClient import mqttClient
 
 if __name__ == "__main__":
     cliente = mqttClient(connect=True)

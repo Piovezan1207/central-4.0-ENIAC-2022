@@ -5,20 +5,20 @@ import time
 import sys
 
 try:
-    from stations_superclass import stations_superclass
-    from generic_station import generic_station
-    from station1 import station1
-    from station5 import station5
-    from station7 import station7
-    from thread_ import thread_
+    from stations_class.stations_superclass import stations_superclass
+    from stations_class.generic_station import generic_station
+    from stations_class.station1 import station1
+    from stations_class.station5 import station5
+    from stations_class.station7 import station7
+    from stations_class.thread_ import thread_
 
 except:
-    from project._class.stations_superclass import stations_superclass
-    from project._class.generic_station import generic_station
-    from project._class.station1 import station1
-    from project._class.station5 import station5
-    from project._class.station7 import station7
-    from  project._class.thread_ import thread_
+    from project.program_class.stations_class.stations_superclass import stations_superclass
+    from project.program_class.stations_class.generic_station import generic_station
+    from project.program_class.stations_class.station1 import station1
+    from project.program_class.stations_class.station5 import station5
+    from project.program_class.stations_class.station7 import station7
+    from  project.program_class.stations_class.thread_ import thread_
 
     
 #Estações da planta

@@ -1,7 +1,7 @@
 try:
     from generic_station import generic_station
 except:
-    from project._class.generic_station import generic_station
+    from project.program_class.stations_class.generic_station import generic_station
 
 class station1(generic_station):
 

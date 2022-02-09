@@ -7,8 +7,8 @@ try:
     from order import order
     from process import process
 except:
-    from project._class.order import order
-    from project._class.process import process
+    from project.program_class.order import order
+    from project.program_class.process import process
 
 load_dotenv()
 
