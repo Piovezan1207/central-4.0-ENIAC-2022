@@ -54,7 +54,7 @@ class stations_superclass(thread_):
             return True
         else:
             self.status = "#{}E01".format(self.clpNumber)
-            raise project.program_class.error_class.errors.connection_error(self.clpNumber , self.ip, self.bit_test_test)
+            raise errors.connection_error(self.clpNumber , self.ip, self.bit_test_test)
             return False
 
 
