@@ -25,7 +25,7 @@ class stations_superclass(thread_):
     bit_test_test=int(os.getenv("bit_test_test"))                        #Teste de conexão        Teste de conexão - resposta da estação
 
     def __init__(self, clpNumber, ip , temp , port = 502  ) -> None:
-        super().__init__( temp )
+        super().__init__( temp, clpNumber )
         self.daemon = True
         self.ip = ip
         self.port = port

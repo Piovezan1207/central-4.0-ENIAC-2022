@@ -44,8 +44,8 @@ class station5(generic_station):
                     sys.stdout.write("\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
                     sys.stdout.flush()
                 else:
-                    sys.stdout.write(".5")
-                    sys.stdout.flush()
+                    # sys.stdout.write(".5")
+                    # sys.stdout.flush()
                     time.sleep(self.temp)
             else:
                 self.isRunning = False

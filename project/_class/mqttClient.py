@@ -5,8 +5,10 @@ import json
 
 try:
     from order import order
+    from process import process
 except:
     from project._class.order import order
+    from project._class.process import process
 
 load_dotenv()
 
@@ -31,7 +33,7 @@ class mqttClient:
                        password = os.getenv("PASSWORD"), 
                        topic = os.getenv("TOPICO"), 
                        keepAliveBroker = 60,
-                       connect = False) -> None:
+                       connect = False,) -> None:
 
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
@@ -42,6 +44,8 @@ class mqttClient:
         self.password = password
         self.topic = topic
         self.keepAliveBroker = keepAliveBroker
+        self.processClass = process()
+        self.processClass.playThread_()
 
         if connect: self.connect()
 
