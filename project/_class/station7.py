@@ -49,6 +49,9 @@ class station7(generic_station):
 
     def run(self):
         while True:
+            # sys.stdout.write("7 {} vivo".format(self.pauseThread))
+            # sys.stdout.flush()
+            # time.sleep(self.temp)
             if self.stopFlag: break
 
             if not self.pauseThread:

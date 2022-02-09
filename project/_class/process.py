@@ -132,16 +132,16 @@ class process(thread_):
                     #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
                     #   teoricamente todas as estações já estão iniciadas.
                     messages_list.append(stations[num].startStation()[1])
-                if not stations[7].is_alive(): #Se a thread já não estiver rodando
-                    stations[7].start()#Roda a thread da estação 7 que verifica a entrada de peças
+                if not stations[7].isRunning: #Se a thread já não estiver rodando
+                    stations[7].pauseThread = False#Roda a thread da estação 7 que verifica a entrada de peças
             else:
                 stations_to_command = [3,5,6,7]#Lista de estações para comandar
                 for num in stations_to_command:#Inicia todas as estações da lista
                     #Normalemnete não seria necessário, pois se a planta já estpa em modo entrada
                     #   teoricamente todas as estações já estão iniciadas.
                     messages_list.append(stations[num].startStation()[1])
-                if not stations[5].is_alive(): #Se a thread já não estiver rodando
-                    stations[5].start()#Roda a thread da estação 5 que verifica a saída de peças
+                if not stations[5].isRunning: #Se a thread já não estiver rodando
+                    stations[5].pauseThread = False#Roda a thread da estação 5 que verifica a saída de peças
             status = "#XS10" if actualDirection == "storage" else "#XS11"
             messages_list.append(status)
             return True , messages_list
@@ -152,8 +152,8 @@ class process(thread_):
             return False , messages_list  #"Alguma estação está em processo, aguarde para fazer um novo chamado"
         
         if flow == "storage":
-            if stations[5].is_alive(): 
-                status = process.killThread(stations[5], "5")
+            if stations[5].isRunning: 
+                status = process.pauseThread(stations[5], "5")
                 messages_list.append(status)
             messages_list.append(stations[5].stopStation()[1])
 
@@ -168,17 +168,15 @@ class process(thread_):
                 messages_list.append(stations[num].input()[1])
             status = "#XS0E"
             messages_list.append(status)
-            if not stations[7].is_alive():
-                stations[7].start()#Roda a thread da estação 7 que verifica a saída de peças
-            else:
-                print("Ué, 7 ta viva?")
+            if not stations[7].isRunning:
+                stations[7].pauseThread = False#Roda a thread da estação 7 que verifica a saída de peças
             status = "#7S13"
             messages_list.append(status)
             return True, messages_list# "Processo em modo de armazenamento."
 
         elif flow == "assemble":
-            if stations[7].is_alive(): 
-                status = process.killThread(stations[7], "7")
+            if stations[7].isRunning: 
+                status = process.pauseThread(stations[7], "7")
                 messages_list.append(status)
             messages_list.append(stations[1].stopStation()[1])
             messages_list.append(stations[2].stopStation()[1])
@@ -188,10 +186,8 @@ class process(thread_):
                 messages_list.append(stations[num].output()[1])
             status = "#XS0E"
             messages_list.append(status)
-            if not stations[5].is_alive():
-                stations[5].start()#Roda a thread da estação 5 que verifica a saída de peças
-            else:
-                print("Ué, 5 ta viva?")
+            if not stations[5].isRunning:
+                stations[5].pauseThread = False #Roda a thread da estação 5 que verifica a saída de peças
             status = "#5S13"
             messages_list.append(status)
             return True, messages_list # "Processo em modo de montagem."
@@ -283,11 +279,12 @@ class process(thread_):
     
     @staticmethod
     #Finaliza todas as threads relativas ao modo entrada ou saída
-    def killThread(classThreadToKill , num = "X"):
-        print("Devo matar a thread {}".format(num))
+    def pauseThread(classThreadToKill , num = "X"):
+        print("Devo pausar a thread {}".format(num))
 
-        classThreadToKill.stopThread()
-        classThreadToKill.join()
+        # classThreadToKill.stopThread()
+        # classThreadToKill.join()
+        classThreadToKill.pauseThread = True
         status = "#{}S14".format(num)
         return status
 
