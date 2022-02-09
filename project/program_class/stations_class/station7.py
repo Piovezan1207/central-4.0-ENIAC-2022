@@ -65,6 +65,8 @@ class station7(generic_station):
                         color = "SILVER"
                     sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
                     sys.stdout.flush()
+                    self.threadPublishMQTT("teste" , "\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
+
                 else:
                     time.sleep(self.temp)
             else:

@@ -10,20 +10,28 @@ class order:
 
     status = ""
 
-    def __init__(self, type, properties = None) -> None:
+    def __init__(self, type, clientMqtt, properties = None) -> None:
         self.type = type
         self.properties = properties
+        self.clientMqtt = clientMqtt
         self.start_order()
     
     def start_order(self):
         if self.type == "assemble":
-            process.direction(self.type)
-            process.assemblyColor(self.properties)
+            respDirection = process.direction(self.type)
+            respColor = process.assemblyColor(self.properties)
+            # print(respDirection[0][0])
+            self.status = respDirection[0] , respColor[0]
+            self.clientMqtt.publish("teste" , str(respDirection[0][0]))
         elif self.type == "storage":
-            process.direction(self.type)
+            respDirection = process.direction(self.type)
+            # print(respDirection[0])
+            self.status = respDirection[0]
+            self.clientMqtt.publish("teste" , str(respDirection[0][0]))
             pass
         else:
             print("Tipo desconhecido")
+            self.clientMqtt.publish("teste" , "error")
             #error
             pass
 

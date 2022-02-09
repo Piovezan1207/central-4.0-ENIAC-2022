@@ -3,6 +3,11 @@ import time
 import sys
 from threading import Thread
 
+try:
+    from ...program_class.mqtt_class.mqttPublish import mqttPublish
+except:
+    from project.program_class.mqtt_class.mqttPublish import mqttPublish
+
 class thread_(Thread):
 
     stopFlag = False
@@ -33,5 +38,7 @@ class thread_(Thread):
         
     def isRunning_(self):
         return self.isRunning
-            
 
+    def threadPublishMQTT(self, topic, payload):
+        id = "ThreadStation{}".format(self.clpNumber)
+        mqttPublish.publishMQTT(topic, payload, id)

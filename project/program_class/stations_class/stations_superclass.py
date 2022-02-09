@@ -4,7 +4,7 @@ import time
 from dotenv import load_dotenv
 
 try:
-    import errors
+    from ... import errors
     from thread_ import thread_
 except:
     from project.program_class.error_class import errors

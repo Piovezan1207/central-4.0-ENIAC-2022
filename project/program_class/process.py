@@ -54,6 +54,7 @@ class process(thread_):
                 status = process.allStatus()
                 sys.stdout.write(str(status) + "\n")
                 sys.stdout.flush()
+                self.threadPublishMQTT("teste" , str(status))
                 time.sleep(self.temp)
             else:
                 self.isRunning = False    
@@ -255,15 +256,15 @@ class process(thread_):
     #Define a direção e cria o log
     def direction(flow):
         resp = process.direction_(flow)
-        process.makeLog(resp[1])
-        return resp
+        log = process.makeLog(resp[1])
+        return resp , log
     
     @staticmethod
     #Faz o pedido da cor e cria o log
     def assemblyColor(color):
         resp = process.assemblyColor_(color)
-        process.makeLog(resp[1])
-        return resp
+        log = process.makeLog(resp[1])
+        return resp , log
     
     @staticmethod
     #Cria o log em um arquivo TXT
@@ -271,12 +272,17 @@ class process(thread_):
         path = "{}\{}".format(os.getcwd(), "logs.txt")
         logs = open(path , 'r')
         conteudo = logs.readlines()
+        conteudo2 = ""
         for i in info:
-            conteudo.append("{} : {}\n".format(datetime.datetime.now() , i))
-        conteudo.append("---------------------------\n")
+            conteudo2 += ("{} : {}\n".format(datetime.datetime.now() , i))
+        conteudo2 += ("---------------------------\n")
+
+        conteudo.append(conteudo2)
+
         logs = open(path , 'w')
         logs.writelines(conteudo)
         logs.close()
+        return conteudo2
 
     @staticmethod
     #Retorna todos os status que essa classe criou, para ser enviado para a API

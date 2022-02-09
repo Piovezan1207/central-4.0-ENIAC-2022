@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+
 import os
 from dotenv import load_dotenv
 import json
@@ -12,7 +13,6 @@ except:
 
 load_dotenv()
 
-
 class mqttClient:
 
     connection_list = {
@@ -25,7 +25,8 @@ class mqttClient:
      "6" :  "255: Currently unused."
     }
 
-    oder_list = []
+    assemble_oder_list = []
+    storage_oder_list = []
 
     def __init__(self, broker = os.getenv("BOKER") , 
                        port = int(os.getenv("PORTABROKER")), 
@@ -72,12 +73,14 @@ class mqttClient:
             if jsonCommands["type"] == "assemble":
                 if "color" in jsonCommands:
                     color = jsonCommands["color"]
-                    self.oder_list.append(order("assemble" , color))
+                    self.assemble_oder_list.append(order("assemble" , client ,color))
             elif jsonCommands["type"] == "storage":
-                self.oder_list.append(order("storage"))
+                self.storage_oder_list.append(order("storage" , client))
             else:
                 print("Tipo desconhecido...")
         else:
             print("False algo aqui...")
-        print(self.oder_list)
+
     
+    
+        
