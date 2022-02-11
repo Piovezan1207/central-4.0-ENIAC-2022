@@ -38,6 +38,11 @@ class station5(generic_station):
                         color = "RED"
                     elif not resp[1][0] and  resp[1][1]:
                         color = "SILVER"
+
+                    if self.order_list != []:
+                        if self.order_list[0].properties.upper() == color:
+                            self.order_list[0].status = ""
+
                     sys.stdout.write("\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
                     sys.stdout.flush()
                     self.threadPublishMQTT("teste" , "\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))

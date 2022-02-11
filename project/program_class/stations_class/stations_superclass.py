@@ -24,6 +24,8 @@ class stations_superclass(thread_):
     bit_outputMode_outputMode=int(os.getenv("bit_outputMode_outputMode"))#Seta o modo de saída    Verifica se a estação está em modo de saída
     bit_test_test=int(os.getenv("bit_test_test"))                        #Teste de conexão        Teste de conexão - resposta da estação
 
+    
+
     def __init__(self, clpNumber, ip , temp , port = 502  ) -> None:
         super().__init__( temp, clpNumber )
         self.daemon = True
@@ -31,7 +33,8 @@ class stations_superclass(thread_):
         self.port = port
         self.clpNumber = clpNumber
         self.modbusClient = ModbusTcpClient(ip, port)
-    
+        self.order_list = []
+
     def readBits(self, startBit, numBits):
         return  self.modbusClient.read_discrete_inputs(startBit,numBits).bits
 
