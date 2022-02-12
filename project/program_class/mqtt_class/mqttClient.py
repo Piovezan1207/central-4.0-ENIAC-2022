@@ -81,13 +81,17 @@ class mqttClient:
             #A lista de pedidos de montagens estará no objeto da estação 5, visto que uma thread dessa estação
             #   irá finalizar esses pedidos
             stations[5].order_list.append(order("assemble" , client , properties))
+            stations[5].saveOrderList()
             for i in  stations[5].order_list:
-                print("Ordem estação 5 " , i.type)
+                print("Ordem estação 5 " , i.orderId)
 
         elif jsonCommands["type"] == "storage":
             #A lista de pedidos de armazenamento estará no objeto da estação 7, visto que uma thread dessa estação
                 #   irá finalizar esses pedidos
-            stations[7].order_list.append(order("storage" , client))
+            properties = jsonCommands["properties"]
+
+            stations[7].order_list.append(order("storage" , client, properties))
+            stations[7].saveOrderList()
             for i in  stations[7].order_list:
                     print("Ordem estação 7 " , i.type)
         else:
@@ -150,5 +154,4 @@ class mqttClient:
         listColors = ["BLACK" , "SILVER" , "RED"]
         if color.upper() in listColors: return True
         else: return False
-
 

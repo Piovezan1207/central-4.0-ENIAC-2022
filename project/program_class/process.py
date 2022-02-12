@@ -26,9 +26,9 @@ stations = {
     1 : station1(1, "192.168.2.10"), 
     2 : generic_station(2, "192.168.2.20"), 
     3 : generic_station(3, "192.168.2.30"), 
-    5 : station5(5, "192.168.2.50"), 
+    5 : station5(5, "192.168.2.50",  useOrderList=True), 
     6 : generic_station(6, "192.168.2.60"), 
-    7 : station7(7, "192.168.2.70"), 
+    7 : station7(7, "192.168.2.70", useOrderList = True), 
 }
 
 

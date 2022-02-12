@@ -1,3 +1,4 @@
+import time
 
 try:
     from process import process
@@ -15,7 +16,7 @@ class order:
         self.properties = properties
         self.clientMqtt = clientMqtt
         self.status = ""
-        self.startOrderTime  = ""
+        self.startOrderTime  = str(time.ctime())
         self.finishOrdertTime  = ""
         self.orderId = properties["id"]
         self.start_order()

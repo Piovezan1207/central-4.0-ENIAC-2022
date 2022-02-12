@@ -9,7 +9,7 @@ S,5,A estação foi reiniciada.
 S,6,Estação colocada em modo entrada.
 S,7,Estação já está em modo entrada.
 S,8,Estação colocada em modo saída.
-S,9,Estação já estava em modod saída.
+S,9,Estação já estava em modo saída.
 S,A,Estação processou uma peça.
 S,B,Estação em processo.
 S,C,Processo livre.

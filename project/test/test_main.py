@@ -1,41 +1,25 @@
-import json
+try:
+    import cPickle as pickle
+except ModuleNotFoundError:
+    import pickle
 
-jsonTeste = {
-            "type" : "assemble",
-            "properties" : [{
-                "id" : "10",
-                "color" : "BLACK",
-            }],
-        }
-
-
-for i in jsonTeste:
-    print(jsonTeste[i])
+def save_object(obj, filename):
+    with open(filename, 'wb') as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
 
 
-if "type" not in jsonTeste or "properties" not in jsonTeste: print("erro 1")
+class teste:
+     def __init__(self, val1, val2) -> None:
+         self.val1 = val1
+         self.val2 = val2
 
-typesList = ["assemble" , "storage"]
-if  jsonTeste["type"] not in typesList: print("erro 2")
+# objetos = [teste(1,2) , teste(3,4) , teste(5,6)]
 
-propertiesList = {
-    "assemble" : ["id"  ],
-    "storage" : [["id" ] , ["color"]],
-    }
+# save_object( objetos, "teste.pkl")
 
+with open('teste.pkl', 'rb') as inp:
+    objetos = pickle.load(inp)
 
-listOfMandatoryProperties = ["id"]
-listOfOptionalProperties = ["color"]
-propertiesList = listOfMandatoryProperties + listOfOptionalProperties
-colorsList = ["BLACK" , "SILVER" , "RED"]
-
-
-
-for i in listOfMandatoryProperties:
-    if i not in jsonTeste["properties"][0]:
-        print("erro 3")
-
-for i in jsonTeste["properties"][0]:
-    if i not in propertiesList: print("erro 4")
-
-if jsonTeste["type"] == "assemble" and "color" not in jsonTeste["properties"][0]: print("erro 5")
+for i in objetos:
+    print(i.val1)
+    print(i.val2)

@@ -1,5 +1,6 @@
 import time
 import sys
+import json
 
 try:
     from generic_station import generic_station
@@ -8,8 +9,8 @@ except:
 
 class station7(generic_station):
 
-    def __init__(self,clpNumber  , ip , temp = 2 , port = 502) -> None:
-        super().__init__(clpNumber, ip , temp , port)
+    def __init__(self,clpNumber  , ip , temp = 2 , port = 502, useOrderList = False) -> None:
+        super().__init__(clpNumber, ip , temp , port, useOrderList)
         self.pauseThread = True
         self.start()
         self.temp = temp
@@ -63,9 +64,23 @@ class station7(generic_station):
                         color = "RED"
                     elif not resp[1][0] and  resp[1][1]:
                         color = "SILVER"
-                    sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
-                    sys.stdout.flush()
-                    self.threadPublishMQTT("teste" , "\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
+                    # sys.stdout.write("\nUma peça deu entrada na estação 7!\nA cor da peça é: {}\n".format(color))
+                    # sys.stdout.flush()
+
+                    message = json.dumps({
+                        "type" : "storageInput",
+                        "properties" : {
+                            "color" : color,
+                            "dateTime" : str(time.ctime())
+                        },
+                    })
+
+                    self.threadPublishMQTT("teste" , message)
+
+                    self.order_list.pop(0)
+                    self.saveOrderList()
+                    for i in  self.order_list:
+                        print("Ordem estação 7 " , i.orderId)
 
                 else:
                     time.sleep(self.temp)
