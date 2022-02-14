@@ -17,6 +17,9 @@ except ModuleNotFoundError:
 
 load_dotenv()
 
+
+
+
 # Stations superclass
 class stations_superclass(thread_):
 
@@ -40,8 +43,7 @@ class stations_superclass(thread_):
         self.modbusClient = ModbusTcpClient(ip, port) #Instanciando um client modbus para esse CLP
         if useOrderList:#Caso seja necessária a utilização de lista de pedidos 
             self.order_list = [] #Lista de pedidos que podem ser feitos, onde essa estação é uma referencia
-            self.loadOrderList() #Método para carregar a lista com os objetos de pedidos
-
+            #self.loadOrderList() #Método para carregar a lista com os objetos de pedidos
     #Método para fazer a leitura de BITs do CLP, utiliando MODBUS
     #                       parametros
     # startBit -> int : Número do BIT em que a leitura no MODBUS deve ser iniciada 
@@ -106,6 +108,7 @@ class stations_superclass(thread_):
     #                       retorna
     # True -> bool 
     def saveOrderList(self):
+        print(self.order_list)
         filename = "orderListStation{}.pkl".format(self.clpNumber)
         with open(filename, 'wb') as outp:  
             pickle.dump(self.order_list, outp, pickle.HIGHEST_PROTOCOL)
@@ -121,10 +124,18 @@ class stations_superclass(thread_):
     # True -> bool 
     def loadOrderList(self):
         filename = "orderListStation{}.pkl".format(self.clpNumber)
-        try:
-            with open(filename, 'rb') as inp:
-                self.order_list = pickle.load(inp)
-            for i in  self.order_list:
-                print("Iniciando ... Ordem estação {}".format(self.clpNumber) , i.type)
-        except:
-            with open(filename, 'wb'): pass
+        print("Carregando lista...")
+        # try:
+        #     with open(filename, 'rb') as inp:
+        #         self.order_list = pickle.load(inp)
+        #     for i in  self.order_list:
+        #         print("Iniciando ... Ordem estação {}".format(self.clpNumber) , i.type)
+        # except:
+        #     print("rolou exept...")
+        #     with open(filename, 'wb'): pass
+
+
+        with open(filename, 'rb') as inp:
+            self.order_list = pickle.load(inp)
+        for i in  self.order_list:
+            print("Iniciando ... Ordem estação {}".format(self.clpNumber) , i.type)

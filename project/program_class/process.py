@@ -5,7 +5,6 @@ import time
 import sys
 
 try:
-    from stations_class.stations_superclass import stations_superclass
     from stations_class.generic_station import generic_station
     from stations_class.station1 import station1
     from stations_class.station5 import station5
@@ -13,7 +12,6 @@ try:
     from stations_class.thread_ import thread_
 
 except:
-    from project.program_class.stations_class.stations_superclass import stations_superclass
     from project.program_class.stations_class.generic_station import generic_station
     from project.program_class.stations_class.station1 import station1
     from project.program_class.stations_class.station5 import station5

@@ -5,15 +5,23 @@ from dotenv import load_dotenv
 import json
 
 try:
-    from ..order import order
+    from ..order import order 
     from ..process import process
     from ..process import stations
 except:
-    from project.program_class.order import order
+    from project.program_class.order import order 
     from project.program_class.process import process
     from project.program_class.process import stations
 
+try:
+    import cPickle as pickle
+except ModuleNotFoundError:
+    import pickle
+
+
 load_dotenv()
+
+pickleStationsList = [5,7]
 
 class mqttClient:
 
@@ -27,8 +35,8 @@ class mqttClient:
      "6" :  "255: Currently unused."
     }
 
-    assemble_oder_list = []
-    storage_oder_list = []
+    # assemble_oder_list = []
+    # storage_oder_list = []
 
     def __init__(self, broker = os.getenv("BOKER") , 
                        port = int(os.getenv("PORTABROKER")), 
@@ -49,6 +57,9 @@ class mqttClient:
         self.keepAliveBroker = keepAliveBroker
         self.processClass = process()
         self.processClass.playThread_()
+
+        for station in pickleStationsList: #Carregar listas de objetos
+            self.loadOrderList(stations[station], station)
 
         if connect: self.connect()
 
@@ -80,8 +91,9 @@ class mqttClient:
             properties = jsonCommands["properties"]
             #A lista de pedidos de montagens estará no objeto da estação 5, visto que uma thread dessa estação
             #   irá finalizar esses pedidos
-            stations[5].order_list.append(order("assemble" , client , properties))
-            stations[5].saveOrderList()
+            stations[5].order_list.append(order("assemble" , client , properties, startOrder=True))
+            # stations[5].order_list.append(teste(properties["id"]))
+            self.saveOrderList(stations[5], 5)
             for i in  stations[5].order_list:
                 print("Ordem estação 5 " , i.orderId)
 
@@ -90,10 +102,10 @@ class mqttClient:
                 #   irá finalizar esses pedidos
             properties = jsonCommands["properties"]
 
-            stations[7].order_list.append(order("storage" , client, properties))
-            stations[7].saveOrderList()
+            stations[7].order_list.append(order("storage" , client, properties, startOrder=True))
+            self.saveOrderList(stations[7], 7)
             for i in  stations[7].order_list:
-                    print("Ordem estação 7 " , i.type)
+                    print("Ordem estação 7 " , i.orderId)
         else:
             print("Tipo desconhecido...")
 
@@ -155,3 +167,40 @@ class mqttClient:
         if color.upper() in listColors: return True
         else: return False
 
+        #Método para salvar a lista de objetos referentes a ordens de serviços no qual esse CLP
+    #   é responsável por finalizar
+
+    #                       parametros
+    # null
+
+    #                       retorna
+    # True -> bool 
+    def saveOrderList(self, stationObject, clpNumber):
+        print(stationObject.order_list)
+        filename = "orderListStation{}.pkl".format(clpNumber)
+        with open(filename, 'wb') as outp:  
+            pickle.dump(stationObject.order_list, outp, pickle.HIGHEST_PROTOCOL)
+        return True
+
+    #Método para carregar a lista de objetos referentes a ordens de serviços no qual esse CLP
+    #   é responsável por finalizar
+
+    #                       parametros
+    # null
+
+    #                       retorna
+    # True -> bool 
+    def loadOrderList(self, stationObject, clpNumber):
+        filename = "orderListStation{}.pkl".format(clpNumber)
+        print("Carregando lista...")
+        try:
+            with open(filename, 'rb') as inp:
+                stationObject.order_list = pickle.load(inp)
+            for i in  stationObject.order_list:
+                print("Iniciando ... Ordem estação {}".format(clpNumber) , i.orderId)
+
+            if stationObject.order_list != []:
+                stationObject.pauseThread = False 
+        except:
+            print("Arquivo de objetos não existe ou está vazio. Um novo será criado ao chegar uma ordem.")
+        
