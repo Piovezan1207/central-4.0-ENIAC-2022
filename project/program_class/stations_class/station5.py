@@ -12,16 +12,25 @@ class station5(generic_station):
     def __init__(self,clpNumber  , ip , temp = 5 , port = 502, useOrderList = False) -> None:
         super().__init__(clpNumber, ip , temp, port , useOrderList)
         self.temp = temp
-        self.pauseThread = True
+        self.pauseThread = False
         self.start()
 
     def confirmProcess(self):
-        if self.readBits(10 , 1)[0]:
-            B = self.readBits(6 , 3)
-            self.pulseBit(10)
+        if self.readBits(6 , 1)[0]:
+            B = self.readBits(6 , 12)
+            self.pulseBit(6)
+            
             return True , B
         else:
             return False , False
+
+    def binaryToInt(self, binaryList):
+            val = 0
+            val += int(binaryList[0]) * 1
+            val += int(binaryList[1]) * 2
+            val += int(binaryList[2]) * 4
+            return val
+
 
     def run(self):
         while True:
@@ -32,41 +41,40 @@ class station5(generic_station):
                 resp = self.confirmProcess()
 
                 if resp[0]:
-                    color = ""
-                    if resp[1][0] and not resp[1][1]:
-                        color = "BLACK"
-                    elif not resp[1][0] and not resp[1][1]:
-                        color = "RED"
-                    elif not resp[1][0] and  resp[1][1]:
-                        color = "SILVER"
 
-                    if self.order_list != []:
-                        if self.order_list[0].properties["color"].upper() == color:
-                            self.order_list[0].status = ""
+                    color = { "BLACK" : self.binaryToInt(resp[1][1:4]),
+                              "SILVER" : self.binaryToInt(resp[1][4:7]),
+                              "RED" : self.binaryToInt(resp[1][7:10] ),
+                            }
+                    
+                    print(color)
 
-                    # sys.stdout.write("\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
-                    # sys.stdout.flush()
+                    # if self.order_list != []:
+                    #     if self.order_list[0].properties["color"].upper() == color:
+                    #         self.order_list[0].status = ""
 
-                    message = json.dumps({
-                        "type" : "finishedAssembly",
-                        "properties" : {
-                            "id" : self.order_list[0].orderId,
-                            "color" : color,
-                            "startDateTime" : self.order_list[0].startOrderTime,
-                            "finishDateTime" : str(time.ctime())
-                        },
-                    })
+                    # # sys.stdout.write("\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
+                    # # sys.stdout.flush()
 
-                    self.threadPublishMQTT("teste" , message)
+                    # message = json.dumps({
+                    #     "type" : "finishedAssembly",
+                    #     "properties" : {
+                    #         "id" : self.order_list[0].orderId,
+                    #         "color" : color,
+                    #         "startDateTime" : self.order_list[0].startOrderTime,
+                    #         "finishDateTime" : str(time.ctime())
+                    #     },
+                    # })
 
-                    self.order_list.pop(0)
-                    self.saveOrderList()
-                    for i in  self.order_list:
-                        print("Ordem estação 5 " , i.orderId)
+                    # self.threadPublishMQTT("teste" , message)
+
+                    # self.order_list.pop(0)
+                    # self.saveOrderList()
+                    # for i in  self.order_list:
+                    #     print("Ordem estação 5 " , i.orderId)
 
                     # self.threadPublishMQTT("teste" , "\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
                 else:
-                    # print("cachaça")
                     time.sleep(self.temp)
             else:
                 self.isRunning = False
