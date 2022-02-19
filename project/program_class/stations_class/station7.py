@@ -76,13 +76,16 @@ class station7(generic_station):
                     })
 
                     self.threadPublishMQTT("teste" , message)
+                    
+                    if self.order_list != []:
+                        self.order_list.pop(0)
+                        self.saveOrderList()
 
-                    # self.order_list.pop(0)
-                    # self.saveOrderList()
                     for i in  self.order_list:
                         print("Ordem estação 7 " , i.orderId)
 
                 else:
+                    print("Thread 7 - rodando")
                     time.sleep(self.temp)
             else:
                 self.isRunning = False

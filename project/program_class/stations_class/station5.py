@@ -46,35 +46,38 @@ class station5(generic_station):
                               "SILVER" : self.binaryToInt(resp[1][4:7]),
                               "RED" : self.binaryToInt(resp[1][7:10] ),
                             }
-                    
-                    print(color)
 
-                    # if self.order_list != []:
-                    #     if self.order_list[0].properties["color"].upper() == color:
-                    #         self.order_list[0].status = ""
+                    #Verifica as peças que foram finalizadas e para quais ordens pertencem
+                    for colorName in color: #Para cada cor da color{}
+                        for num in range(color[colorName]):#Para cada cor, esse for rodará o número de peças processadas
+                            reversedOrderList = list(reversed(self.order_list)) #Inverte a lista, para que o primeiro pedido esteja na ultima posição.
+                                                                                #   Isso é feito pois a lista será rodada invertida.
+                            for orderNum in range(len(reversedOrderList)-1, -1 , -1):#Para cada ordem existente na order_list[]
 
-                    # # sys.stdout.write("\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
-                    # # sys.stdout.flush()
+                                print(orderNum, reversedOrderList[orderNum].properties["color"])
+                                if reversedOrderList[orderNum].properties["color"] == colorName: #Verifica se a cor processada bate com alguma ordem
+                                    message = json.dumps({ #Caso bata, cria a JSON de finalização da order
+                                            "type" : "finishedAssembly",
+                                            "properties" : {
+                                                "id" : reversedOrderList[orderNum].orderId,
+                                                "color" : colorName,
+                                                "startDateTime" : reversedOrderList[orderNum].startOrderTime,
+                                                "finishDateTime" : str(time.ctime())
+                                            },
+                                        })
+                                    print(message)
+                                    self.threadPublishMQTT("teste" , message) #Envia a informação que essa ordem foi finalizada, por MQTT
+                                    reversedOrderList.pop(orderNum) #Remove do Order_list
+                                    self.order_list = list(reversed(reversedOrderList)) #Iverte a lista, voltando para sua ordem original e salva no order_list.
+                                    self.saveOrderList() #Salva os objetos nos arquivos
+                                    break #Quebra o loop de verificação dessa cor
 
-                    # message = json.dumps({
-                    #     "type" : "finishedAssembly",
-                    #     "properties" : {
-                    #         "id" : self.order_list[0].orderId,
-                    #         "color" : color,
-                    #         "startDateTime" : self.order_list[0].startOrderTime,
-                    #         "finishDateTime" : str(time.ctime())
-                    #     },
-                    # })
+                    for i in  self.order_list:
+                        print("Ordem estação 5 " , i.properties["color"])
 
-                    # self.threadPublishMQTT("teste" , message)
-
-                    # self.order_list.pop(0)
-                    # self.saveOrderList()
-                    # for i in  self.order_list:
-                    #     print("Ordem estação 5 " , i.orderId)
-
-                    # self.threadPublishMQTT("teste" , "\nUma teve sua montagem finalizada, e está na estação 5!\nA cor da peça é: {}\n".format(color))
                 else:
+                    print("Thread 5 - rodando")
+                    # if self.order_list == []: self.pauseThread_()
                     time.sleep(self.temp)
             else:
                 self.isRunning = False

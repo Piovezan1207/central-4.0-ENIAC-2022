@@ -95,7 +95,7 @@ class mqttClient:
             # stations[5].order_list.append(teste(properties["id"]))
             self.saveOrderList(stations[5], 5)
             for i in  stations[5].order_list:
-                print("Ordem estação 5 " , i.orderId)
+                print("Ordem estação 5 " , i.properties["color"].upper())
 
         elif jsonCommands["type"] == "storage":
             #A lista de pedidos de armazenamento estará no objeto da estação 7, visto que uma thread dessa estação

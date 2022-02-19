@@ -14,8 +14,8 @@ class order:
     def __init__(self, type, clientMqtt, properties = None, startOrder = True) -> None:
         self.type = type
         self.properties = properties
-        # self.clientMqtt = clientMqtt # ESSE CARA CAUSA PROBLEMA PARA SALVAR O OBJETO UTILIZANDO PICKLE
         self.status = ""
+        self.properties["color"] = properties["color"].upper()
         self.startOrderTime  = str(time.ctime())
         self.finishOrdertTime  = ""
         self.orderId = properties["id"]
