@@ -233,12 +233,15 @@ class process(thread_):
         if actualDirection == "assemble":
             acceptColors = ["BLACK" , "RED" , "SILVER"]
             if color.upper() in acceptColors:
-                stations[7].outputStartWithColor(color)
-                status = "#XS0D"
-                messages_list.append(status)
-                if not stations[5].isRunning_():
-                    stations[5].playThread_()
-                return True , messages_list
+                if process.status(7)[4] == "F":
+                    stations[7].outputStartWithColor(color)
+                    status = "#XS0D"
+                    messages_list.append(status)
+                    if not stations[5].isRunning_():
+                        stations[5].playThread_()
+                    return True , messages_list
+                else: 
+                    pass #SINALIZAR QUE A ESTAÇÃO 7 ESTÁ EM PROCESSO PARA QUE NÃO SEJA PEDIDA UMA PEÇA EM CIMA DA OURA 
             else:
                 print("Erro na cor escolhida, verifique a string e tente novamente.\nCores aceitas : {}".format(acceptColors))
                 status = "#XE06"

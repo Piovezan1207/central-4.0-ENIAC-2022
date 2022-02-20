@@ -19,18 +19,16 @@ class order:
         self.startOrderTime  = str(time.ctime())
         self.finishOrdertTime  = ""
         self.orderId = properties["id"]
-        if startOrder : self.start_order()
+        if startOrder : return self.start_order()
     
     def start_order(self):
         if self.type == "assemble":
             respDirection = process.direction(self.type)
             respColor = process.assemblyColor(self.properties["color"])
-            # print(respDirection[0][0])
             self.status = respDirection[0] , respColor[0]
             mqttPublish.publishMQTT("teste" , str(respDirection[0][0]))
         elif self.type == "storage":
             respDirection = process.direction(self.type)
-            # print(respDirection[0])
             self.status = respDirection[0]
             mqttPublish.publishMQTT("teste" , str(respDirection[0][0]))
             pass
