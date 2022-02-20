@@ -241,6 +241,10 @@ class process(thread_):
                         stations[5].playThread_()
                     return True , messages_list
                 else: 
+                    print("A estação 7 está em processo e não pode aceitar o pedido de montagem de uma segunda peça")
+                    status = "#XE08"
+                    messages_list.append(status)
+                    return False , messages_list
                     pass #SINALIZAR QUE A ESTAÇÃO 7 ESTÁ EM PROCESSO PARA QUE NÃO SEJA PEDIDA UMA PEÇA EM CIMA DA OURA 
             else:
                 print("Erro na cor escolhida, verifique a string e tente novamente.\nCores aceitas : {}".format(acceptColors))

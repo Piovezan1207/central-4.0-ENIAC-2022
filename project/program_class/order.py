@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import time
 
 try:
@@ -9,7 +10,6 @@ except:
 
 #Classe que define os pedidos feitos para a central
 class order:
-
 
     def __init__(self, type, clientMqtt, properties = None, startOrder = True) -> None:
         self.type = type
@@ -26,17 +26,19 @@ class order:
             respDirection = process.direction(self.type)
             respColor = process.assemblyColor(self.properties["color"])
             self.status = respDirection[0] , respColor[0]
-            mqttPublish.publishMQTT("teste" , str(respDirection[0][0]))
+            mqttPublish.publishMQTT("teste" , str(respDirection[0][0])) #Caso uma das duas respostas seja false, publicar informando que esse pedido nãio foi aceito
         elif self.type == "storage":
             respDirection = process.direction(self.type)
-            self.status = respDirection[0]
-            mqttPublish.publishMQTT("teste" , str(respDirection[0][0]))
+            self.status = respDirection[0] , None
+            mqttPublish.publishMQTT("teste" , str(respDirection[0][0])) #Caso uma das duas respostas seja false, publicar informando que esse pedido nãio foi aceito
             pass
         else:
             print("Tipo desconhecido")
-            mqttPublish.publishMQTT("teste" , "error")
+            mqttPublish.publishMQTT("teste" , "error") #Sinalizar que esse pedido teve algum erro
             #error
             pass
 
     def status_order(self):
         pass
+
+    #Fazer um método statico para deletar um objeto com algum status FALSE
