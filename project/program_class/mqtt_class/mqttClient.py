@@ -82,9 +82,7 @@ class mqttClient:
             client.publish("teste" , json.dumps(check[1])) 
             return
 
-        client.publish("teste" , "ok")
         jsonCommands =  check[1]
-
 
         if jsonCommands["type"] == "assemble":
            
@@ -92,7 +90,6 @@ class mqttClient:
             #A lista de pedidos de montagens estará no objeto da estação 5, visto que uma thread dessa estação
             #   irá finalizar esses pedidos
             stations[5].order_list.append(order("assemble" , client , properties, startOrder=True))
-            # stations[5].order_list.append(teste(properties["id"]))
             self.saveOrderList(stations[5], 5)
             for i in  stations[5].order_list:
                 print("Ordem estação 5 " , i.properties["color"].upper())
@@ -200,6 +197,15 @@ class mqttClient:
                 print("Iniciando ... Ordem estação {}".format(clpNumber) , i.orderId)
 
             if stationObject.order_list != []:
+
+                for i in range (len(stationObject.order_list)-1, -1, -1): #Limpa de pedidos que tiveram erro em seu inicio
+                    #Essa limpa pode ser feita, pois quando o pedido foi instanciado a partir da classe order,
+                        #quando há erro, ele sinaliza a central administradora disso e essa ordem fica apenas "perdida" na lista
+                    if stationObject.order_list[i].status == False: #caso o status do pedido seja False, houve um problema com ele
+                        print("Removendo order False na abertura de arquivo5" , stationObject.order_list[i].orderId)
+                        
+                        stationObject.order_list.pop(i) #Ele é removido da lista
+
                 stationObject.pauseThread = False 
         except:
             print("Arquivo de objetos não existe ou está vazio. Um novo será criado ao chegar uma ordem.")

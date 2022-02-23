@@ -69,6 +69,7 @@ class process(thread_):
     # T/F - Estção em processo
     # I/O/F - Estação em modo entrada (I), saída(O) ou sem direção (F)
     def status(station):
+        # print(station)
         temp_bits = station.readBits(0, 6)
 
         started = "T" if temp_bits[0] else "F" 
@@ -233,7 +234,7 @@ class process(thread_):
         if actualDirection == "assemble":
             acceptColors = ["BLACK" , "RED" , "SILVER"]
             if color.upper() in acceptColors:
-                if process.status(7)[4] == "F":
+                if process.status(stations[7])[4] == "F":
                     stations[7].outputStartWithColor(color)
                     status = "#XS0D"
                     messages_list.append(status)
@@ -260,16 +261,35 @@ class process(thread_):
     @staticmethod
     #Define a direção e cria o log
     def direction(flow):
-        resp = process.direction_(flow)
-        log = process.makeLog(resp[1])
-        return resp , log
+        resp = process.direction_(flow) #Define a direção do processo
+        log = process.makeLog(resp[1])  #Faz o log de acordo com a  essage_list que vem do direction_
+        lastLog = resp[1][len(resp[1])-1] #Busca o ultimo log feito (normalmente o mais importante, contendo o status geral)
+        #Retorna 3parametros:
+         #resp[0] -  bool -> 
+                         # True caso o comando tenha sido um sucesso
+                         # False caso o comando não tenha sido um sucesso
+         #log - list -> 
+                        #Message list feita pela função direction_
+         #lastLog - string ->
+                        #O ultimo log da lista, contendo um erro ou status de sucesso
+        return resp[0], log , lastLog
+
     
     @staticmethod
     #Faz o pedido da cor e cria o log
     def assemblyColor(color):
-        resp = process.assemblyColor_(color)
-        log = process.makeLog(resp[1])
-        return resp , log
+        resp = process.assemblyColor_(color) #Faz o pedido de retirada de uma cor
+        log = process.makeLog(resp[1]) #Faz o log de acordo com a  essage_list que vem do assemblyColor_
+        lastLog = resp[1][len(resp[1])-1] #Busca o ultimo log feito (normalmente o mais importante, contendo o status geral)
+        #Retorna 3parametros:
+         #resp[0] -  bool -> 
+                         # True caso o pedido de retirada da peça tenha sido um sucesso
+                         # False caso houver algum problema com o pedido e ele não seja executado
+         #log - list -> 
+                        #Message list feita pela função assemblyColor_
+         #lastLog - string ->
+                        #O ultimo log da lista, contendo um erro ou status de sucesso
+        return resp[0] , log , lastLog
     
     @staticmethod
     #Cria o log em um arquivo TXT
